@@ -82,11 +82,14 @@ def change_order_group_by_duplicates (ch_or_df,run_no):
         ch_or_df = ch_or_df.groupby(['ProjectId', 'Amount','DateCreated',"Type","OrganizationChangeName"],as_index=False).agg({ 
      'Count_Duplicates':'count',"co_Status":"max","ChangeOrdersId":"last","ChangeOrdersInstanceId":"last","DateLastModified":"last","DateLastReviewed":"last","OrganizationChangeId":"last"})
         ch_or_df['Count_Duplicates'] = ch_or_df['Count_Duplicates'] - 1
-    else:
+    elif run_no==2:
         print("2nd duplicates round")
         ch_or_df = ch_or_df.groupby(['ProjectId', 'Amount','DateCreated',"Type","OrganizationChangeName"],as_index=False).agg({ 
       'Count_Duplicates':'sum',"co_Status":"max","ChangeOrdersId":"last","ChangeOrdersInstanceId":"last","DateLastModified":"last","DateLastReviewed":"last","OrganizationChangeId":"last"})
-
+    elif run_no==3:
+        print("3rd duplicates round")
+        ch_or_df = ch_or_df.groupby(['ProjectId','DateCreated',"Type","OrganizationChangeName"],as_index=False).agg({ 
+      'Amount':'mean','Count_Duplicates':'sum',"co_Status":"max","ChangeOrdersId":"last","ChangeOrdersInstanceId":"last","DateLastModified":"last","DateLastReviewed":"last","OrganizationChangeId":"last"})
     print("Duplicates step DONE....")
     return ch_or_df
 def change_order_group_by_pairs (ch_or_df):
@@ -107,8 +110,9 @@ def change_order_with_count_duplicates_and_pairs_to_csv ():
     ch_or_df = change_order_group_by_duplicates(ch_or_df,1)
     ch_or_df = change_order_pd_df(ch_or_df)  
     ch_or_df = change_order_group_by_duplicates(ch_or_df,2)
+    ch_or_df = change_order_group_by_duplicates(ch_or_df,3)
     ch_or_df = change_order_group_by_pairs (ch_or_df)
-    ch_or_df.to_csv(r'D:\Concordia\Master_Of_Science\Dataset_aedo_june_2022\Text_Mining\allprojects\2_co_without_duplicates.csv',index=False)
+    ch_or_df.to_csv(r'D:\Concordia\Master_Of_Science\Dataset_aedo_june_2022\Text_Mining\allprojects\2_v2_co_without_duplicates.csv',index=False)
     return ch_or_df
 
     
